@@ -25,7 +25,7 @@ module.exports={
 			}
 			args=args.concat([__dirname + '/bridge.js', port]);
 
-			var phantom=child.spawn(options.phantomPath,args);
+			var phantom=child.execFile(options.phantomPath,args, {timeout: 60000});
 			phantom.stdout.on('data',function(data){
 				return console.log('phantom stdout: '+data);
 			});
@@ -217,6 +217,7 @@ module.exports={
 				var prematureExitHandler=function(code,signal){
 					console.warn('phantom crash: code '+code);
 					server.close();
+          callback('phantom error');
 				};
 				
 				phantom.on('exit',prematureExitHandler);
